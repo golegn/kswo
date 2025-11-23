@@ -160,7 +160,6 @@ Sub RunPowerShell()
     psFile.WriteLine "    } catch {"
     psFile.WriteLine "    Write-Host 'Website opening failed: ' + $_.Exception.Message"
     psFile.WriteLine "    }"
-    psFile.WriteLine "    $success = $false"
     psFile.WriteLine "    "
     psFile.WriteLine "    if ($success) {"
     psFile.WriteLine "        # Wait for file to be fully written"
